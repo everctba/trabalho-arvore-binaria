@@ -104,7 +104,31 @@ void incluir()
 }
 int incluirNo(struct No* p, int c)
 {
+
+    if (c < p->num) { // Se o valor for menor, insere à esquerda
+        if (p->esq == NULL) {
+            pnovo = (struct No*)malloc(sizeof(struct No));
+            pnovo->num = c;
+            pnovo->esq = NULL;
+            pnovo->dir = NULL;
+            p->esq = pnovo;
+        } else {
+            incluirNo(p->esq, c); // Chamada recursiva
+        }
+    } else if (c > p->num) { // Se o valor for maior, insere à direita
+        if (p->dir == NULL) {
+            pnovo = (struct No*)malloc(sizeof(struct No));
+            pnovo->num = c;
+            pnovo->esq = NULL;
+            pnovo->dir = NULL;
+            p->dir = pnovo;
+        } else {
+            incluirNo(p->dir, c); // Chamada recursiva
+        }
+    }
+    return TRUE;
 }
+
 void excluir()
 {
     int c;
