@@ -185,6 +185,20 @@ void posordem(struct No *node)
 }
 int pesquisarNo(struct No *node, int c)
 {
+    int pesquisarNo(struct No *node, int c);
+    if (node == NULL) {
+        return FALSE;
+    }
+    if (node->num == c) {
+        return TRUE;
+    }
+    if (c < node->num) {
+        return pesquisarNo(node->esq, c);
+    } else {
+        return pesquisarNo(node->dir, c);
+    }
+
+
 }
 void pesquisar(struct No *node)
 {
