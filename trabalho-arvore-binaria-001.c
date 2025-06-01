@@ -5,6 +5,7 @@
 #include<locale.h>
 #define TRUE 1
 #define FALSE 0
+
 struct No
 {
     int num;
@@ -19,7 +20,7 @@ void emordem(struct No *node);
 void posordem(struct No *node);
 void pesquisar(struct No *node);
 int incluirNo(struct No* p, int c);
-int excluirNo(struct No* p, int c);
+int excluirNo(struct No** raiz, int c);
 int pesquisarNo(struct No *node, int c);
 int main()
 {
@@ -48,6 +49,7 @@ int main()
             incluir();
             break;
         case 2:
+
             excluir();
             break;
         case 3:
@@ -105,6 +107,7 @@ void incluir()
 int incluirNo(struct No* p, int c)
 {
 
+
     if (c < p->num) { // Se o valor for menor, insere à esquerda
         if (p->esq == NULL) {
             pnovo = (struct No*)malloc(sizeof(struct No));
@@ -144,12 +147,55 @@ void excluir()
     }
     printf("\nDigite o número a excluir....: ");
     scanf("%d", &c);
+     if (excluirNo(&raiz, c) == TRUE) {
+        printf("\nNúmero excluído com sucesso\n");
+    } else {
+        printf("\nNúmero não encontrado\n");
+    }
     getch();
-
 }
-//int incluirNo(struct No* p, int c)
-//{
-//}
+
+int excluirNo(struct No** raiz, int c) {
+    if (*raiz == NULL) {
+        return FALSE; // Nó não encontrado
+    }
+
+    if (c < (*raiz)->num) {
+        return excluirNo(&((*raiz)->esq), c);
+    } else if (c > (*raiz)->num) {
+        return excluirNo(&((*raiz)->dir), c);
+    } else {
+        struct No* temp = *raiz;
+
+        // Caso 1: Nó sem filhos
+        if ((*raiz)->esq == NULL && (*raiz)->dir == NULL) {
+            free(temp);
+            *raiz = NULL;
+        }
+        // Caso 2: Nó com um único filho
+        else if ((*raiz)->esq == NULL) {
+            *raiz = (*raiz)->dir;
+            free(temp);
+        } else if ((*raiz)->dir == NULL) {
+            *raiz = (*raiz)->esq;
+            free(temp);
+        }
+        // Caso 3: Dois filhos - substitui pelo sucessor in-order
+        else {
+            struct No* sucessor = (*raiz)->dir;
+            while (sucessor->esq != NULL) {
+                sucessor = sucessor->esq;
+            }
+
+            (*raiz)->num = sucessor->num;
+            excluirNo(&((*raiz)->dir), sucessor->num);
+        }
+        return TRUE; // Exclusão bem-sucedida
+    }
+}
+
+
+
 void preordem(struct No *node)
 {
 // raiz - esquerda - direita
@@ -192,6 +238,7 @@ int pesquisarNo(struct No *node, int c)
     if (node->num == c) {
         return TRUE;
     }
+
     if (c < node->num) {
         return pesquisarNo(node->esq, c);
     } else {
